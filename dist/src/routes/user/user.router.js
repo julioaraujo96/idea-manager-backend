@@ -65,20 +65,20 @@ userRouter.get('/tou', (req, res) => {
 });
 userRouter.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('registering');
-    const user = req.body;
-    const { username } = user;
+    const userToRegister = req.body;
+    const { username } = userToRegister;
     try {
         const existingUser = yield UserService.getUserByUsername(username);
         if (existingUser) {
             return res.json({ error: 'Username already exists' });
         }
         // Create a new user in the database
-        const newUser = yield UserService.createUser(user);
-        const { password } = newUser, userInfo = __rest(newUser, ["password"]);
+        const newUser = yield UserService.createUser(userToRegister);
+        const { password } = newUser, user = __rest(newUser, ["password"]);
         // Create and sign a JWT
-        const token = jsonwebtoken_1.default.sign({ userId: userInfo.id }, JWT_SECRET, { expiresIn: '1d' });
+        const token = jsonwebtoken_1.default.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1d' });
         // Send the JWT in the response
-        return res.status(201).json({ userInfo, token });
+        return res.status(201).json({ user, token });
     }
     catch (err) {
         console.error(err);

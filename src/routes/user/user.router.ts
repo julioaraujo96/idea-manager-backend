@@ -25,8 +25,8 @@ userRouter.post('/register' , async ( req : Request, res :Response) => {
 
     console.log('registering')
 
-    const user  = req.body;
-    const {username} = user;
+    const userToRegister  = req.body;
+    const {username} = userToRegister;
 
     try {
 
@@ -36,15 +36,15 @@ userRouter.post('/register' , async ( req : Request, res :Response) => {
             return res.json({error:'Username already exists'});
         }
         // Create a new user in the database
-        const newUser = await UserService.createUser(user);
+        const newUser = await UserService.createUser(userToRegister);
 
-        const { password, ...userInfo } = newUser;
+        const { password, ...user } = newUser;
         
         // Create and sign a JWT
-        const token = jwt.sign({ userId: userInfo.id }, JWT_SECRET , { expiresIn: '1d' });
+        const token = jwt.sign({ userId: user.id }, JWT_SECRET , { expiresIn: '1d' });
 
         // Send the JWT in the response
-        return res.status(201).json({userInfo, token});
+        return res.status(201).json({user, token});
 
     } catch (err) {
         console.error(err);
