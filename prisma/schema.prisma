@@ -12,11 +12,21 @@ datasource db {
 
 model User {
   id Int @id @unique @default(autoincrement())
-  email String @unique
-  name String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime  @updatedAt()
+  username String @unique
   password String
-  // refreshTokens RefreshToken[]
-  createdAt DateTime 
-  updatedAt DateTime
+  idea Idea[]
+}
+
+model Idea{
+  id Int @id @unique @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+  title String
+  description String
+  private Boolean @default(false)
+  user User @relation(fields:[userId], references: [id])
+  userId Int
 }
 
