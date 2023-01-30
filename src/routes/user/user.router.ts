@@ -16,11 +16,6 @@ console.log('jwt')
 
 const JWT_SECRET : string = process.env.JWT_SECRET;
 
-userRouter.get('/tou', (req, res) => {
-    console.log('???????')
-    res.send('TOU')
-})
-
 userRouter.post('/register' , async ( req : Request, res :Response) => {
 
     console.log('registering')

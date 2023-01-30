@@ -13,7 +13,7 @@ Run the DB stuff `npx prisma migrate dev`
 
 Run the server `npm run serve`
 
-Go to localhost:8000/api/users/tou to check if the server is live.
+Go to `localhost:8000/api/hello` to check if the server is live.
 
 Checkout the package.json for other commands.
 
