@@ -1,11 +1,6 @@
 import { db } from "../../utils/db.server";
 import bcrypt from 'bcryptjs';
-
-export type User = {
-    id: number;
-    username: string;
-    password: string;
-  };
+import { User } from '../../entities/User'
 
 
 export const createUser = async (
