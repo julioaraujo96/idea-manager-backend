@@ -11,22 +11,54 @@ datasource db {
 }
 
 model User {
-  id Int @id @unique @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime  @updatedAt()
-  username String @unique
-  password String
-  idea Idea[]
+  id               Int               @id @unique @default(autoincrement())
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt()
+  username         String            @unique
+  password         String
+  name             String
+  bio              String? // User's bio
+  profilePicture   String? // URL to user's profile picture
+  socialMediaLinks SocialMediaLink[] // Array of social media links
+  ideas            Idea[] // Relationship to ideas posted by the user
+  Comment          Comment[]
 }
 
-model Idea{
-  id Int @id @unique @default(autoincrement())
+model SocialMediaLink {
+  id       Int    @id @unique @default(autoincrement())
+  platform String
+  link     String
+  user     User   @relation(fields: [userId], references: [id])
+  userId   Int
+}
+
+model Idea {
+  id          Int       @id @unique @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt()
+  title       String
+  description String
+  private     Boolean   @default(false)
+  voteCount   Int       @default(0) // Total vote count (upvotes - downvotes)
+  tags        Tag[] // Optional field for storing idea tags or categories
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  comments    Comment[] // One-to-many relationship to comments on the idea
+}
+
+model Tag {
+  id    Int    @id @unique @default(autoincrement())
+  name  String @unique
+  ideas Idea[] // Many-to-many relationship with ideas
+}
+
+model Comment {
+  id        Int      @id @unique @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
-  title String
-  description String
-  private Boolean @default(false)
-  user User @relation(fields:[userId], references: [id])
-  userId Int
+  content   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  idea      Idea     @relation(fields: [ideaId], references: [id])
+  ideaId    Int
 }
-
