@@ -24,6 +24,18 @@ export const getUserByUsername = async (username: string): Promise<User | null> 
   });
 };
 
-export const getUserById = async (id: number): Promise<User | null> => {
-  return db.user.findUnique({ where: { id } });
+export const getUserById = async (id: number | string): Promise<User | null> => {
+  try {
+    const userId = typeof id === 'string' ? parseInt(id, 10) : id;
+    
+    const user = await db.user.findUnique({ where: { id: userId } });
+
+    return user;
+
+  } catch (error) {
+    // Handle any errors that occur during the query
+    console.log(error);
+
+    throw new Error('Error retrieving user by ID');
+  }
 };

@@ -4,7 +4,7 @@ import * as UserService from '../routes/user/user.service';
 import jwt from 'jsonwebtoken';
 
 type JwtPayload = {
-    id:number
+    userId:number
 }
 
 export const authMiddleware = async (req : Request, res : Response, next: NextFunction) => {
@@ -12,7 +12,6 @@ export const authMiddleware = async (req : Request, res : Response, next: NextFu
         
         //Get th e JWT from headers 
         const token = req.headers.authorization?.split(' ')[1];
-
         if(!token){
             return res.json({ error: 'Access denied. No token provided.'});
         }
@@ -21,7 +20,7 @@ export const authMiddleware = async (req : Request, res : Response, next: NextFu
         const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
         //find user by id 
-        const user = await UserService.getUserById(decoded.id) 
+        const user = await UserService.getUserById(decoded.userId); 
 
         //if no user is found return error 
         if(!user){
