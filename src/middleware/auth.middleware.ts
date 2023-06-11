@@ -1,5 +1,5 @@
 import express, {Request, Response, NextFunction} from 'express'
-import * as UserService from '../routes/user/user.service';
+import * as UserService from '../services/user.service';
 
 import jwt from 'jsonwebtoken';
 

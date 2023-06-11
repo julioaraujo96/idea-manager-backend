@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 import express from 'express';
 import cors from 'cors';
 
-import { userRouter } from "./src/routes/user/user.router";
+import { userRouter } from "./src/routes/user.router";
 
 
 dotenv.config();

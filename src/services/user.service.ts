@@ -1,6 +1,6 @@
-import { db } from "../../utils/db.server";
+import { db } from "../utils/db.server";
 import bcrypt from 'bcryptjs';
-import { User } from '../../entities/User'
+import { User } from '../entities/User'
 
 export const createUser = async (user: Omit<User, 'id'>): Promise<User> => {
   const { username, password, name, bio, profilePicture } = user;

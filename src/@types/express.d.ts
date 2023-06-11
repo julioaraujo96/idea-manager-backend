@@ -1,4 +1,4 @@
-import { User } from '../routes/user/user.service'
+import { User } from '../services/user.service'
 
 declare global {
 	namespace Express {

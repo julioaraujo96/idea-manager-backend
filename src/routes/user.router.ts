@@ -3,53 +3,25 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import Redis from 'ioredis';
 
-import * as UserService from './user.service';
-import { authMiddleware } from '../../middleware/auth.middleware';
+import * as UserService from '../services/user.service';
+import { authMiddleware } from '../middleware/auth.middleware';
+
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  storeRefreshToken,
+  getRefreshToken,
+  deleteRefreshToken,
+  verifyRefreshToken,
+} from '../services/auth.service';
 
 const userRouter = express.Router();
 
 if (!process.env.JWT_SECRET || !process.env.REFRESH_TOKEN_SECRET) {
   process.exit(1);
 }
+
 // Endpoints ----> /api/users/XXXXX
-
-const JWT_SECRET: string = process.env.JWT_SECRET;
-const REFRESH_TOKEN_SECRET: string = process.env.REFRESH_TOKEN_SECRET;
-
-const redisClient = new Redis();
-
-redisClient.on('error', (err: Error) => {
-  console.error('Redis connection error:', err);
-});
-
-// Function to generate an access token
-const generateAccessToken = (userId: string): string => {
-  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '1d' });
-};
-
-// Function to generate a refresh token
-const generateRefreshToken = (userId: string): string => {
-  return jwt.sign({ userId }, REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-};
-
-// Function to store a refresh token in Redis
-
-const storeRefreshToken = (userId: string, refreshToken: string): void => {
-  const key = `refreshToken:${userId}`;
-  const duration = 7 * 24 * 60 * 60; // 7 days in seconds
-
-  redisClient.setex(key, duration, refreshToken);
-};
-
-// Function to retrieve a refresh token from Redis
-const getRefreshToken = async (userId: string): Promise<string | null> => {
-    try {
-      const refreshToken = await redisClient.get(`refreshToken:${userId}`);
-      return refreshToken;
-    } catch (err) {
-      throw err;
-    }
-  };
 
 userRouter.post('/register', async (req: Request, res: Response) => {
   const userToRegister = req.body;
@@ -110,7 +82,7 @@ userRouter.post('/refresh-token', async (req: Request, res: Response) => {
   }
 
   try {
-    const decoded = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET) as { userId: string };
+    const decoded = verifyRefreshToken(refreshToken);
 
     const storedRefreshToken = await getRefreshToken(decoded.userId);
 
@@ -134,7 +106,7 @@ userRouter.post('/logout', async (req: Request, res: Response) => {
   }
 
   try {
-    await redisClient.del(`refreshToken:${userId}`);
+    await deleteRefreshToken(userId);
     return res.status(200).json({ message: 'Logout successful' });
   } catch (err) {
     console.error(err);
