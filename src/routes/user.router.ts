@@ -1,7 +1,5 @@
 import express, { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import Redis from 'ioredis';
 
 import * as UserService from '../services/user.service';
 import { authMiddleware } from '../middleware/auth.middleware';
