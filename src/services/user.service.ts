@@ -24,6 +24,10 @@ export const getUserByUsername = async (username: string): Promise<User | null> 
   });
 };
 
+export const getAllUsers = async (): Promise<User[] | null> => {
+  return db.user.findMany();
+};
+
 export const getUserById = async (id: number | string): Promise<User | null> => {
   try {
     const userId = typeof id === 'string' ? parseInt(id, 10) : id;
