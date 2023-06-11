@@ -131,5 +131,25 @@ userRouter.get('/profile/:userId', authMiddleware, async (req: Request, res: Res
   }
 });
 
+userRouter.get('/all', authMiddleware, async (req : Request, res : Response) => {
+  try {
+    const users = await UserService.getAllUsers();
+
+    if(!users){
+      return res.status(404).json({ error: 'No users found' });
+    }
+
+    const sanitizedUsers = users.map((user) =>{
+      const { password, ...userData } = user;
+      return userData;
+    })
+
+    return res.status(200).json({ users: sanitizedUsers });
+
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+})
 
 export { userRouter };
