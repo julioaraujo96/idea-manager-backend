@@ -19,7 +19,3 @@ Checkout the package.json for other commands.
 
 Have Fun.
 
-Mandatory uwu 
-
-( UωU)∫
-
